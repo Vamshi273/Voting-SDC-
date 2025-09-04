@@ -1,234 +1,123 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Avengers — Vote Your Hero</title>
-  <style>
-    :root{
-      --bg:#0b0f1a;--card:#141a29;--accent:#6aa2ff;--text:#e8eefc;--muted:#9fb3d9;--ok:#3dda7a;--warn:#ffb020;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:radial-gradient(1200px 600px at 100% -10%,#1a2a4a 0,#0b0f1a 50%),
-      radial-gradient(1000px 500px at -10% 110%,#15223b 0,#0b0f1a 60%),var(--bg);color:var(--text);}
-    header{padding:20px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand .logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 0deg,var(--accent),#9a6aff,#ff6a95,#ffd36a,var(--accent));box-shadow:0 0 20px rgba(106,162,255,.35) inset,0 0 30px rgba(106,162,255,.2)}
-    h1{font-size: clamp(18px, 3vw, 24px);margin:0}
-    .sub{color:var(--muted);font-size:14px}
-    main{padding:16px;max-width:1200px;margin:0 auto}
-    .grid{display:grid;grid-template-columns:repeat( auto-fit, minmax(220px,1fr) );gap:16px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .imgwrap{position:relative;height:220px;background:#0f1524}
-    .imgwrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.1) contrast(1.05)}
-    .fallback{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,#1e2742,#10182b)}
-    .fallback span{font-weight:700;letter-spacing:.4px;color:#cfe0ff;opacity:.9}
-    .meta{padding:14px 14px 12px}
-    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .name{font-weight:700}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--muted)}
-    .actions{padding:12px 14px 16px}
-    button.vote{width:100%;padding:12px 14px;border:0;border-radius:12px;font-weight:700;color:#081120;background:linear-gradient(180deg,#a7c6ff,#79a9ff);box-shadow:0 6px 20px rgba(106,162,255,.35);cursor:pointer}
-    button.vote:disabled{opacity:.6;cursor:not-allowed;filter:grayscale(.4)}footer{max-width:1200px;margin:10px auto 30px;color:var(--muted);padding:0 16px;font-size:13px}
-kbd{background:#0f1524;border:1px solid rgba(255,255,255,.1);border-bottom-color:rgba(0,0,0,.35);padding:2px 6px;border-radius:6px}
-
-/* Results modal (admin-only) */
-.modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(8,12,22,.7);backdrop-filter:blur(6px);}
-.modal.show{display:grid}
-.panel{width:min(780px,92vw);background:linear-gradient(180deg,#121a2b,#0f1627);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.panel h2{margin:0 0 10px}
-.table{width:100%;border-collapse:collapse;font-size:14px}
-.table th,.table td{padding:10px 8px;border-bottom:1px dashed rgba(255,255,255,.08);text-align:left}
-.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.06);position:relative;overflow:hidden}
-.bar > i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--accent),#6affaf);border-radius:999px}
-.panel .muted{color:var(--muted)}
-.panel .controls{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
-.ghost{background:transparent;border:1px solid rgba(255,255,255,.16);color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer}
-.danger{background:linear-gradient(180deg,#ffd1d1,#ff8a8a);border:0;color:#2b0f0f;font-weight:700;padding:10px 12px;border-radius:10px;cursor:pointer}
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saptarang Freshers Day Voting</title>
+<style>
+body { font-family: Arial, sans-serif; background:#111; color:#fff; margin:0; padding:20px;}
+h1 { text-align:center;}
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-top:20px;}
+.card { background:#222; border-radius:12px; padding:10px; text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.5);}
+.card img { max-width:100%; border-radius:8px;}
+.vote-btn { margin-top:10px; padding:8px 16px; border:none; border-radius:8px; cursor:pointer; background:#ff4757; color:#fff; font-weight:bold;}
+.vote-btn:disabled { background:#555; cursor:not-allowed;}
+#resultsModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); overflow:auto;}
+#resultsContent { background:#222; margin:5% auto; padding:20px; width:90%; max-width:600px; border-radius:12px;}
+.close-btn { float:right; cursor:pointer; font-size:20px;}
+</style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>Vote Your Avenger</h1>
-        <div class="sub">Pick your favorite hero. One vote per device. Results are hidden from users.</div>
-      </div>
-    </div>
-  </header>  <main>
-    <section class="grid" id="grid"></section>
-  </main>  <footer>
-    Admin tip: Press <kbd>R</kbd> to <strong>toggle results</strong>. Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>R</kbd> to <strong>reset all votes</strong> (careful!).
-  </footer>  <!-- Results modal (admin-only) -->  <div class="modal" id="modal" aria-hidden="true">
-    <div class="panel">
-      <h2>Results (Admin)</h2>
-      <div class="muted" id="totals"></div>
-      <table class="table" id="results">
-        <thead>
-          <tr>
-            <th>#</th><th>Hero</th><th>Votes</th><th style="width:45%">Share</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="controls">
-        <button class="ghost" id="closeBtn">Close</button>
-        <button class="danger" id="resetBtn" title="Clear all localStorage for this poll">Reset All Votes</button>
-      </div>
-    </div>
-  </div>  <script>
-    // --- Configuration: 8 Avengers (4 men, 4 women) ---
-    const HEROES = [
-      { id: 'ironman', name: 'Iron Man', gender: 'Male', img: 'images/ironman.jpg' },
-      { id: 'thor', name: 'Thor', gender: 'Male', img: 'images/thor.jpg' },
-      { id: 'captain_america', name: 'Captain America', gender: 'Male', img: 'images/captain-america.jpg' },
-      { id: 'black_panther', name: 'Black Panther', gender: 'Male', img: 'images/black-panther.jpg' },
-      { id: 'black_widow', name: 'Black Widow', gender: 'Female', img: 'images/black-widow.jpg' },
-      { id: 'scarlet_witch', name: 'Scarlet Witch', gender: 'Female', img: 'images/scarlet-witch.jpg' },
-      { id: 'captain_marvel', name: 'Captain Marvel', gender: 'Female', img: 'images/captain-marvel.jpg' },
-      { id: 'shuri', name: 'Shuri', gender: 'Female', img: 'images/shuri.jpg' }
-    ];
+<h1>Saptarang Freshers Day Voting</h1>
+<div class="grid" id="cards"></div>
 
-    // If you don't have local images, you can temporarily swap to placeholders like:
-    // img: `https://via.placeholder.com/600x800?text=${encodeURIComponent('Iron Man')}`
+<!-- Results Modal -->
+<div id="resultsModal">
+  <div id="resultsContent">
+    <span class="close-btn" onclick="toggleResults()">&times;</span>
+    <h2>Voting Results</h2>
+    <ul id="resultsList"></ul>
+    <button onclick="resetVotes()">Reset Votes</button>
+  </div>
+</div>
 
-    const LS_KEY_VOTES = 'avengersVotes:v1';
-    const LS_KEY_LOCK  = 'avengersHasVoted:v1'; // prevent multiple votes per device
+<script>
+const contestants = [
+  {name:"Rohan", img:"https://via.placeholder.com/200x250?text=Rohan", gender:"Male"},
+  {name:"Amit", img:"https://via.placeholder.com/200x250?text=Amit", gender:"Male"},
+  {name:"Vikram", img:"https://via.placeholder.com/200x250?text=Vikram", gender:"Male"},
+  {name:"Sahil", img:"https://via.placeholder.com/200x250?text=Sahil", gender:"Male"},
+  {name:"Priya", img:"https://via.placeholder.com/200x250?text=Priya", gender:"Female"},
+  {name:"Anjali", img:"https://via.placeholder.com/200x250?text=Anjali", gender:"Female"},
+  {name:"Sneha", img:"https://via.placeholder.com/200x250?text=Sneha", gender:"Female"},
+  {name:"Divya", img:"https://via.placeholder.com/200x250?text=Divya", gender:"Female"}
+];
 
-    const $grid   = document.getElementById('grid');
-    const $modal  = document.getElementById('modal');
-    const $tbody  = document.querySelector('#results tbody');
-    const $totals = document.getElementById('totals');
-    const $close  = document.getElementById('closeBtn');
-    const $reset  = document.getElementById('resetBtn');
+let votes = JSON.parse(localStorage.getItem('votes')) || Array(contestants.length).fill(0);
+let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
-    function readVotes(){
-      try{ return JSON.parse(localStorage.getItem(LS_KEY_VOTES)) || {}; }catch{ return {}; }
-    }
-    function writeVotes(v){ localStorage.setItem(LS_KEY_VOTES, JSON.stringify(v)); }
+function renderCards() {
+  const container = document.getElementById('cards');
+  container.innerHTML = '';
+  contestants.forEach((c,i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${c.img}" alt="${c.name}">
+      <h3>${c.name} (${c.gender})</h3>
+      <button class="vote-btn" onclick="vote(${i})" ${locked?'disabled':''}>Vote</button>
+    `;
+    container.appendChild(card);
+  });
+}
 
-    function hasVoted(){ return localStorage.getItem(LS_KEY_LOCK) === '1'; }
-    function setVoted(){ localStorage.setItem(LS_KEY_LOCK, '1'); }
-    function clearAll(){ localStorage.removeItem(LS_KEY_VOTES); localStorage.removeItem(LS_KEY_LOCK); }
+function vote(i) {
+  if(!localStorage.getItem('voted')) {
+    votes[i]++;
+    localStorage.setItem('votes', JSON.stringify(votes));
+    localStorage.setItem('voted','true');
+    alert('Vote submitted!');
+    renderCards();
+  } else {
+    alert('You have already voted!');
+  }
+}
 
-    function ensureAllKeys(obj){
-      HEROES.forEach(h=>{ if(!(h.id in obj)) obj[h.id]=0; });
-      return obj;
-    }
-
-    function createCard(hero){
-      const card = document.createElement('article');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="imgwrap">
-          <img src="${hero.img}" alt="${hero.name}" onerror="this.replaceWith(createFallback('${hero.name}'))" />
-        </div>
-        <div class="meta">
-          <div class="row">
-            <div class="name">${hero.name}</div>
-            <div class="badge">${hero.gender}</div>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="vote" data-id="${hero.id}">Vote</button>
-        </div>`;
-      return card;
-    }
-
-    // for inline onerror replacement
-    window.createFallback = function(label){
-      const wrap = document.createElement('div');
-      wrap.className = 'fallback';
-      wrap.innerHTML = `<span>${label}</span>`;
-      return wrap;
-    }
-
-    function renderGrid(){
-      $grid.innerHTML = '';
-      HEROES.forEach(h=> $grid.appendChild(createCard(h)));
-      const voted = hasVoted();
-      document.querySelectorAll('button.vote').forEach(btn=>{
-        btn.disabled = voted; // if already voted, lock buttons
-        btn.addEventListener('click', onVote);
-      });
-    }
-
-    function onVote(e){
-      const id = e.currentTarget.dataset.id;
-      const votes = ensureAllKeys(readVotes());
-      votes[id] += 1;
-      writeVotes(votes);
-      setVoted();
-      // Disable all buttons after a vote
-      document.querySelectorAll('button.vote').forEach(b=> b.disabled = true);
-      // Provide subtle feedback
-      e.currentTarget.textContent = 'Thanks for voting!';
-    }
-
-    function sumVotes(v){ return Object.values(v).reduce((a,b)=>a+b,0); }
-
-    function openResults(){
-      const votes = ensureAllKeys(readVotes());
-      const total = sumVotes(votes);
-      $tbody.innerHTML = '';
-      $totals.textContent = `Total votes: ${total}`;
-
-      HEROES.forEach((h,idx)=>{
-        const n = votes[h.id] || 0;
-        const pct = total ? ((n/total)*100) : 0;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${idx+1}</td>
-          <td>${h.name}</td>
-          <td>${n}</td>
-          <td>
-            <div class="bar"><i style="width:${pct.toFixed(2)}%"></i></div>
-          </td>`;
-        $tbody.appendChild(tr);
-      });
-
-      $modal.classList.add('show');
-      $modal.setAttribute('aria-hidden','false');
-    }
-
-    function closeResults(){
-      $modal.classList.remove('show');
-      $modal.setAttribute('aria-hidden','true');
-    }
-
-    // Keyboard controls
-    document.addEventListener('keydown', (e)=>{
-      // Toggle results with 'R'
-      if(e.key === 'r' || e.key === 'R'){
-        const isOpen = $modal.classList.contains('show');
-        isOpen ? closeResults() : openResults();
-      }
-      // Reset with Ctrl+Alt+R
-      if((e.ctrlKey && e.altKey) && (e.key === 'r' || e.key === 'R')){
-        e.preventDefault();
-        if(confirm('Reset ALL votes and unlock voting on this device?')){
-          clearAll();
-          renderGrid();
-          // If modal visible, refresh it too
-          if($modal.classList.contains('show')) openResults();
-        }
-      }
-      // Close with Escape
-      if(e.key === 'Escape') closeResults();
+function toggleResults() {
+  const modal = document.getElementById('resultsModal');
+  const list = document.getElementById('resultsList');
+  if(modal.style.display==='block'){
+    modal.style.display='none';
+  } else {
+    list.innerHTML='';
+    votes.forEach((v,i)=>{
+      const li = document.createElement('li');
+      li.textContent = `${contestants[i].name} (${contestants[i].gender}): ${v} votes`;
+      list.appendChild(li);
     });
+    modal.style.display='block';
+  }
+}
 
-    $close.addEventListener('click', closeResults);
-    $reset.addEventListener('click', ()=>{
-      if(confirm('Reset ALL votes and unlock voting on this device?')){
-        clearAll();
-        renderGrid();
-        openResults();
-      }
-    });
+function resetVotes() {
+  if(confirm('Reset all votes?')) {
+    votes = Array(contestants.length).fill(0);
+    localStorage.setItem('votes', JSON.stringify(votes));
+    localStorage.removeItem('voted');
+    renderCards();
+    toggleResults();
+  }
+}
 
-    // Init
-    ensureAllKeys(readVotes());
-    renderGrid();
-  </script></body>
+function toggleLock() {
+  const pass = prompt('Enter admin password:');
+  if(pass==='saptarang123'){ // change password if you want
+    locked = !locked;
+    localStorage.setItem('locked', JSON.stringify(locked));
+    alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED');
+    renderCards();
+  } else {
+    alert('Wrong password!');
+  }
+}
+
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='R'||e.key==='r') toggleResults();
+  if(e.ctrlKey && e.altKey && e.key==='r') resetVotes();
+  if(e.key==='L'||e.key==='l') toggleLock();
+});
+
+renderCards();
+</script>
+</body>
 </html>
