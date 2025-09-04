@@ -6,7 +6,8 @@
 <title>Saptarang Freshers Day Voting</title>
 <style>
 body { font-family: Arial, sans-serif; background:#111; color:#fff; margin:0; padding:20px;}
-h1 { text-align:center;}
+h1 { text-align:center; font-size:3em; background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; color: transparent; margin-bottom:30px;}
+h2 { margin-top:40px; text-align:center; font-size:2em; text-decoration: underline;}
 .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-top:20px;}
 .card { background:#222; border-radius:12px; padding:10px; text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.5);}
 .card img { max-width:100%; border-radius:8px;}
@@ -18,8 +19,13 @@ h1 { text-align:center;}
 </style>
 </head>
 <body>
-<h1>Saptarang Freshers Day Voting</h1>
-<div class="grid" id="cards"></div>
+<h1>Saptarang</h1>
+
+<h2>Mr. Fresher</h2>
+<div class="grid" id="mrCards"></div>
+
+<h2>Mrs. Fresher</h2>
+<div class="grid" id="mrsCards"></div>
 
 <!-- Results Modal -->
 <div id="resultsModal">
@@ -32,66 +38,81 @@ h1 { text-align:center;}
 </div>
 
 <script>
-const contestants = [
-  {name:"Rohan", img:"https://via.placeholder.com/200x250?text=Rohan", gender:"Male"},
-  {name:"Amit", img:"https://via.placeholder.com/200x250?text=Amit", gender:"Male"},
-  {name:"Vikram", img:"https://via.placeholder.com/200x250?text=Vikram", gender:"Male"},
-  {name:"Sahil", img:"https://via.placeholder.com/200x250?text=Sahil", gender:"Male"},
-  {name:"Priya", img:"https://via.placeholder.com/200x250?text=Priya", gender:"Female"},
-  {name:"Anjali", img:"https://via.placeholder.com/200x250?text=Anjali", gender:"Female"},
-  {name:"Sneha", img:"https://via.placeholder.com/200x250?text=Sneha", gender:"Female"},
-  {name:"Divya", img:"https://via.placeholder.com/200x250?text=Divya", gender:"Female"}
+const males = [
+  {name:"Rohan", img:"https://via.placeholder.com/200x250?text=Rohan"},
+  {name:"Amit", img:"https://via.placeholder.com/200x250?text=Amit"},
+  {name:"Vikram", img:"https://via.placeholder.com/200x250?text=Vikram"},
+  {name:"Sahil", img:"https://via.placeholder.com/200x250?text=Sahil"}
 ];
 
-let votes = JSON.parse(localStorage.getItem('votes')) || Array(contestants.length).fill(0);
+const females = [
+  {name:"Priya", img:"https://via.placeholder.com/200x250?text=Priya"},
+  {name:"Anjali", img:"https://via.placeholder.com/200x250?text=Anjali"},
+  {name:"Sneha", img:"https://via.placeholder.com/200x250?text=Sneha"},
+  {name:"Divya", img:"https://via.placeholder.com/200x250?text=Divya"}
+];
+
+let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
 let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
 function renderCards() {
-  const container = document.getElementById('cards');
-  container.innerHTML = '';
-  contestants.forEach((c,i) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${c.img}" alt="${c.name}">
-      <h3>${c.name} (${c.gender})</h3>
-      <button class="vote-btn" onclick="vote(${i})" ${locked?'disabled':''}>Vote</button>
-    `;
-    container.appendChild(card);
+  const mrContainer = document.getElementById('mrCards');
+  mrContainer.innerHTML='';
+  males.forEach((c,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
+    <button class="vote-btn" onclick="vote('males',${i})" ${locked?'disabled':''}>Vote</button>`;
+    mrContainer.appendChild(card);
+  });
+
+  const mrsContainer = document.getElementById('mrsCards');
+  mrsContainer.innerHTML='';
+  females.forEach((c,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
+    <button class="vote-btn" onclick="vote('females',${i})" ${locked?'disabled':''}>Vote</button>`;
+    mrsContainer.appendChild(card);
   });
 }
 
-function vote(i) {
-  if(!localStorage.getItem('voted')) {
-    votes[i]++;
+function vote(group,i){
+  if(!localStorage.getItem('voted')){
+    votes[group][i]++;
     localStorage.setItem('votes', JSON.stringify(votes));
     localStorage.setItem('voted','true');
     alert('Vote submitted!');
     renderCards();
-  } else {
+  }else{
     alert('You have already voted!');
   }
 }
 
-function toggleResults() {
-  const modal = document.getElementById('resultsModal');
-  const list = document.getElementById('resultsList');
+function toggleResults(){
+  const modal=document.getElementById('resultsModal');
+  const list=document.getElementById('resultsList');
   if(modal.style.display==='block'){
     modal.style.display='none';
-  } else {
+  }else{
     list.innerHTML='';
-    votes.forEach((v,i)=>{
-      const li = document.createElement('li');
-      li.textContent = `${contestants[i].name} (${contestants[i].gender}): ${v} votes`;
+    males.forEach((v,i)=>{
+      const li=document.createElement('li');
+      li.textContent=`${males[i].name} (Mr.): ${votes.males[i]} votes`;
+      list.appendChild(li);
+    });
+    females.forEach((v,i)=>{
+      const li=document.createElement('li');
+      li.textContent=`${females[i].name} (Mrs.): ${votes.females[i]} votes`;
       list.appendChild(li);
     });
     modal.style.display='block';
   }
 }
 
-function resetVotes() {
-  if(confirm('Reset all votes?')) {
-    votes = Array(contestants.length).fill(0);
+function resetVotes(){
+  if(confirm('Reset all votes?')){
+    votes={males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes', JSON.stringify(votes));
     localStorage.removeItem('voted');
     renderCards();
@@ -99,14 +120,14 @@ function resetVotes() {
   }
 }
 
-function toggleLock() {
-  const pass = prompt('Enter admin password:');
-  if(pass==='saptarang123'){ // change password if you want
-    locked = !locked;
+function toggleLock(){
+  const pass=prompt('Enter admin password:');
+  if(pass==='saptarang123'){
+    locked=!locked;
     localStorage.setItem('locked', JSON.stringify(locked));
     alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED');
     renderCards();
-  } else {
+  }else{
     alert('Wrong password!');
   }
 }
