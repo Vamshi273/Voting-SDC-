@@ -145,7 +145,7 @@ const females = [
 let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
 let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
-// Fix for mobile: clear voted flag on page load after reset
+// Mobile fix: clear voted flag after reset or first load
 if (!localStorage.getItem('allowVoteAgain')) {
   localStorage.removeItem('voted');
   localStorage.setItem('allowVoteAgain', 'true');
@@ -153,12 +153,16 @@ if (!localStorage.getItem('allowVoteAgain')) {
 
 function renderCards(){
   const voted = localStorage.getItem('voted') === 'true';
+  
   const mrContainer = document.getElementById('mrCards');
   mrContainer.innerHTML = '';
   males.forEach((c,i)=>{
     const card = document.createElement('div'); 
     card.className = 'card';
-    card.innerHTML = `<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
+    card.innerHTML = `
+      <img src="${c.img}" alt="${c.name}">
+      <h3>${c.name}</h3>
+      <p>Votes: ${votes.males[i]}</p>
       <button class="vote-btn" onclick="vote('males',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
     mrContainer.appendChild(card);
   });
@@ -168,7 +172,10 @@ function renderCards(){
   females.forEach((c,i)=>{
     const card = document.createElement('div'); 
     card.className = 'card';
-    card.innerHTML = `<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
+    card.innerHTML = `
+      <img src="${c.img}" alt="${c.name}">
+      <h3>${c.name}</h3>
+      <p>Votes: ${votes.females[i]}</p>
       <button class="vote-btn" onclick="vote('females',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
     mrsContainer.appendChild(card);
   });
@@ -221,7 +228,7 @@ function resetVotes(){
     localStorage.setItem('votes', JSON.stringify(votes));
 
     localStorage.removeItem('voted'); // allow voting again
-    localStorage.setItem('allowVoteAgain', 'true'); // ensure page reload fixes
+    localStorage.setItem('allowVoteAgain', 'true');
 
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
