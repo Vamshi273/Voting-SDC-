@@ -127,7 +127,7 @@ h2 {
 </div>
 
 <script>
-const adminPassword = "saptarang123"; // admin password
+const adminPassword = "saptarang123";
 
 const males = [
   {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
@@ -162,7 +162,6 @@ function renderCards(){
     card.innerHTML = `
       <img src="${c.img}" alt="${c.name}">
       <h3>${c.name}</h3>
-      <p>Votes: ${votes.males[i]}</p>
       <button class="vote-btn" onclick="vote('males',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
     mrContainer.appendChild(card);
   });
@@ -175,7 +174,6 @@ function renderCards(){
     card.innerHTML = `
       <img src="${c.img}" alt="${c.name}">
       <h3>${c.name}</h3>
-      <p>Votes: ${votes.females[i]}</p>
       <button class="vote-btn" onclick="vote('females',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
     mrsContainer.appendChild(card);
   });
@@ -226,13 +224,10 @@ function resetVotes(){
   if(confirm('Reset all votes?')){
     votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes', JSON.stringify(votes));
-
     localStorage.removeItem('voted'); // allow voting again
     localStorage.setItem('allowVoteAgain', 'true');
-
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
-
     renderCards();
     toggleResults();
   }
