@@ -114,7 +114,7 @@ function resetVotes(){
   if(confirm("Reset all votes?")){
     votes={males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes',JSON.stringify(votes));
-    localStorage.removeItem('voted');
+    localStorage.removeItem('voted'); // allow all users to vote again
     locked=false; localStorage.setItem('locked',JSON.stringify(locked));
     alert("Votes reset! Everyone can vote again.");
     renderCards();
