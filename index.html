@@ -83,18 +83,18 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Candidates
+// Candidates with online image URLs
 const males = [
-  {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
-  {name:"Ram Charan", img:"MV5BZWY1NTQyMWItMWU2OS00NWMwLWFlN2MtMDZlYzEwZmU3MTYzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"},
-  {name:"Chiranjeevi", img:"517EDEYjsHL.jpg"},
-  {name:"Appu", img:"4b66c7797edf566ce33faf716aff65f6.jpg"}
+  {name:"Prabhas", img:"https://i.imgur.com/7q5wCAd.jpg"},
+  {name:"Ram Charan", img:"https://i.imgur.com/twW0Qpu.jpg"},
+  {name:"Chiranjeevi", img:"https://i.imgur.com/3jUXzXZ.jpg"},
+  {name:"Appu", img:"https://i.imgur.com/9Vx0DqI.jpg"}
 ];
 const females = [
-  {name:"Sai Pallavi", img:"images/saipallavi.jpg"},
-  {name:"Kajal", img:"images/kajal.jpg"},
-  {name:"Sreelela", img:"images/sreelela.jpg"},
-  {name:"Samantha", img:"images/samantha.jpg"}
+  {name:"Sai Pallavi", img:"https://i.imgur.com/Df2tr9h.jpg"},
+  {name:"Kajal", img:"https://i.imgur.com/ovx30Zl.jpg"},
+  {name:"Sreelela", img:"https://i.imgur.com/y6wX8qS.jpg"},
+  {name:"Samantha", img:"https://i.imgur.com/B7tZd4F.jpg"}
 ];
 
 // Render cards
