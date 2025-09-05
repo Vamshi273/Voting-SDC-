@@ -181,7 +181,7 @@ function toggleResults(){
     alert("Wrong password!");
     return;
   }
-  
+
   const modal=document.getElementById('resultsModal'); 
   const list=document.getElementById('resultsList');
   list.innerHTML='';
@@ -206,27 +206,28 @@ function resetVotes(){
   }
 
   if(confirm('Reset all votes?')){
-    votes={males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
-    localStorage.setItem('votes',JSON.stringify(votes));
-    localStorage.removeItem('voted');
+    votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
+    localStorage.setItem('votes', JSON.stringify(votes));
+    localStorage.removeItem('voted'); // allow voting again
 
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
 
-    renderCards(); 
+    renderCards();
     toggleResults();
   }
 }
 
 function toggleLock(){
-  const pass=prompt('Enter admin password to lock/unlock voting:');
-  if(pass!==adminPassword){
+  const pass = prompt("Enter admin password to lock/unlock voting:");
+  if(pass !== adminPassword){
     alert("Wrong password!");
     return;
   }
+
   locked = !locked;
   localStorage.setItem('locked', JSON.stringify(locked));
-  alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED');
+  alert(locked ? "Voting is now LOCKED" : "Voting is now UNLOCKED");
   renderCards();
 }
 
