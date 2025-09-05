@@ -127,6 +127,8 @@ h2 {
 </div>
 
 <script>
+const adminPassword = "saptarang123"; // password for admin actions
+
 const males = [
   {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
   {name:"Ram Charan", img:"MV5BZWY1NTQyMWItMWU2OS00NWMwLWFlN2MtMDZlYzEwZmU3MTYzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"},
@@ -174,27 +176,35 @@ function vote(group,i){
 }
 
 function toggleResults(){
+  const pass = prompt("Enter password to view results:");
+  if(pass !== adminPassword){
+    alert("Wrong password!");
+    return;
+  }
+  
   const modal=document.getElementById('resultsModal'); 
   const list=document.getElementById('resultsList');
-  if(modal.style.display==='block'){ 
-    modal.style.display='none'; 
-  } else {
-    list.innerHTML='';
-    males.forEach((v,i)=>{
-      const li=document.createElement('li'); 
-      li.textContent=`${males[i].name} (Mr.): ${votes.males[i]} votes`; 
-      list.appendChild(li);
-    });
-    females.forEach((v,i)=>{
-      const li=document.createElement('li'); 
-      li.textContent=`${females[i].name} (Mrs.): ${votes.females[i]} votes`; 
-      list.appendChild(li);
-    });
-    modal.style.display='block';
-  }
+  list.innerHTML='';
+  males.forEach((v,i)=>{
+    const li=document.createElement('li'); 
+    li.textContent=`${males[i].name} (Mr.): ${votes.males[i]} votes`; 
+    list.appendChild(li);
+  });
+  females.forEach((v,i)=>{
+    const li=document.createElement('li'); 
+    li.textContent=`${females[i].name} (Mrs.): ${votes.females[i]} votes`; 
+    list.appendChild(li);
+  });
+  modal.style.display='block';
 }
 
 function resetVotes(){
+  const pass = prompt("Enter password to reset votes:");
+  if(pass !== adminPassword){
+    alert("Wrong password!");
+    return;
+  }
+
   if(confirm('Reset all votes?')){
     votes={males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes',JSON.stringify(votes));
@@ -211,7 +221,7 @@ function resetVotes(){
 
 function toggleLock(){
   const pass=prompt('Enter admin password:');
-  if(pass==='saptarang123'){ 
+  if(pass===adminPassword){ 
     locked=!locked; 
     localStorage.setItem('locked',JSON.stringify(locked));
     alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED'); 
