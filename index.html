@@ -145,7 +145,7 @@ const females = [
 let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
 let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
-// Mobile fix: clear voted flag after reset or first load
+// allow voting again after reset
 if (!localStorage.getItem('allowVoteAgain')) {
   localStorage.removeItem('voted');
   localStorage.setItem('allowVoteAgain', 'true');
@@ -186,9 +186,9 @@ function vote(group,i){
   }
   votes[group][i]++;
   localStorage.setItem('votes', JSON.stringify(votes));
-  localStorage.setItem('voted', 'true');
+  localStorage.setItem('voted', 'true'); // prevent multiple votes
   alert('Vote submitted!');
-  renderCards(); // buttons will disable
+  renderCards(); // disables buttons, no counts shown
 }
 
 function toggleResults(){
