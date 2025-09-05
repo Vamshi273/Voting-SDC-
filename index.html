@@ -145,8 +145,14 @@ const females = [
 let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
 let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
+// Fix for mobile: clear voted flag on page load after reset
+if (!localStorage.getItem('allowVoteAgain')) {
+  localStorage.removeItem('voted');
+  localStorage.setItem('allowVoteAgain', 'true');
+}
+
 function renderCards(){
-  const voted = localStorage.getItem('voted'); // check if user has voted
+  const voted = localStorage.getItem('voted') === 'true';
   const mrContainer = document.getElementById('mrCards');
   mrContainer.innerHTML = '';
   males.forEach((c,i)=>{
@@ -214,8 +220,8 @@ function resetVotes(){
     votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes', JSON.stringify(votes));
 
-    // Clear voted flag to allow voting again
-    localStorage.removeItem('voted');
+    localStorage.removeItem('voted'); // allow voting again
+    localStorage.setItem('allowVoteAgain', 'true'); // ensure page reload fixes
 
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
