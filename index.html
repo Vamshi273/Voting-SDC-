@@ -163,19 +163,33 @@ function renderCards(){
 
 function vote(group,i){
   if(!localStorage.getItem('voted')){
-    votes[group][i]++; localStorage.setItem('votes',JSON.stringify(votes));
-    localStorage.setItem('voted','true'); alert('Vote submitted!');
+    votes[group][i]++;
+    localStorage.setItem('votes',JSON.stringify(votes));
+    localStorage.setItem('voted','true');
+    alert('Vote submitted!');
     renderCards();
-  } else { alert('You have already voted!'); }
+  } else {
+    alert('You have already voted!');
+  }
 }
 
 function toggleResults(){
-  const modal=document.getElementById('resultsModal'); const list=document.getElementById('resultsList');
-  if(modal.style.display==='block'){ modal.style.display='none'; }
-  else{
+  const modal=document.getElementById('resultsModal'); 
+  const list=document.getElementById('resultsList');
+  if(modal.style.display==='block'){ 
+    modal.style.display='none'; 
+  } else {
     list.innerHTML='';
-    males.forEach((v,i)=>{const li=document.createElement('li'); li.textContent=`${males[i].name} (Mr.): ${votes.males[i]} votes`; list.appendChild(li);});
-    females.forEach((v,i)=>{const li=document.createElement('li'); li.textContent=`${females[i].name} (Mrs.): ${votes.females[i]} votes`; list.appendChild(li);});
+    males.forEach((v,i)=>{
+      const li=document.createElement('li'); 
+      li.textContent=`${males[i].name} (Mr.): ${votes.males[i]} votes`; 
+      list.appendChild(li);
+    });
+    females.forEach((v,i)=>{
+      const li=document.createElement('li'); 
+      li.textContent=`${females[i].name} (Mrs.): ${votes.females[i]} votes`; 
+      list.appendChild(li);
+    });
     modal.style.display='block';
   }
 }
@@ -185,15 +199,26 @@ function resetVotes(){
     votes={males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes',JSON.stringify(votes));
     localStorage.removeItem('voted');
-    renderCards(); toggleResults();
+
+    // Unlock voting after reset
+    locked = false;
+    localStorage.setItem('locked', JSON.stringify(locked));
+
+    renderCards(); 
+    toggleResults();
   }
 }
 
 function toggleLock(){
   const pass=prompt('Enter admin password:');
-  if(pass==='saptarang123'){ locked=!locked; localStorage.setItem('locked',JSON.stringify(locked));
-    alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED'); renderCards();
-  } else { alert('Wrong password!'); }
+  if(pass==='saptarang123'){ 
+    locked=!locked; 
+    localStorage.setItem('locked',JSON.stringify(locked));
+    alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED'); 
+    renderCards();
+  } else { 
+    alert('Wrong password!'); 
+  }
 }
 
 document.addEventListener('keydown',(e)=>{
