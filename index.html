@@ -180,15 +180,15 @@ function renderCards(){
 }
 
 function vote(group,i){
-  if(!localStorage.getItem('voted')){
-    votes[group][i]++;
-    localStorage.setItem('votes',JSON.stringify(votes));
-    localStorage.setItem('voted','true');
-    alert('Vote submitted!');
-    renderCards();
-  } else {
+  if(localStorage.getItem('voted')) {
     alert('You have already voted!');
+    return;
   }
+  votes[group][i]++;
+  localStorage.setItem('votes', JSON.stringify(votes));
+  localStorage.setItem('voted', 'true');
+  alert('Vote submitted!');
+  renderCards(); // buttons will disable
 }
 
 function toggleResults(){
@@ -228,8 +228,8 @@ function resetVotes(){
     localStorage.setItem('allowVoteAgain', 'true');
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
+    alert("Votes reset successfully!");
     renderCards();
-    toggleResults();
   }
 }
 
