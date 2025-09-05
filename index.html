@@ -127,7 +127,7 @@ h2 {
 </div>
 
 <script>
-const adminPassword = "saptarang123"; // password for admin actions
+const adminPassword = "saptarang123"; // admin password
 
 const males = [
   {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
@@ -176,7 +176,7 @@ function vote(group,i){
 }
 
 function toggleResults(){
-  const pass = prompt("Enter password to view results:");
+  const pass = prompt("Enter admin password to view results:");
   if(pass !== adminPassword){
     alert("Wrong password!");
     return;
@@ -199,7 +199,7 @@ function toggleResults(){
 }
 
 function resetVotes(){
-  const pass = prompt("Enter password to reset votes:");
+  const pass = prompt("Enter admin password to reset votes:");
   if(pass !== adminPassword){
     alert("Wrong password!");
     return;
@@ -210,7 +210,6 @@ function resetVotes(){
     localStorage.setItem('votes',JSON.stringify(votes));
     localStorage.removeItem('voted');
 
-    // Unlock voting after reset
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
 
@@ -220,15 +219,15 @@ function resetVotes(){
 }
 
 function toggleLock(){
-  const pass=prompt('Enter admin password:');
-  if(pass===adminPassword){ 
-    locked=!locked; 
-    localStorage.setItem('locked',JSON.stringify(locked));
-    alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED'); 
-    renderCards();
-  } else { 
-    alert('Wrong password!'); 
+  const pass=prompt('Enter admin password to lock/unlock voting:');
+  if(pass!==adminPassword){
+    alert("Wrong password!");
+    return;
   }
+  locked = !locked;
+  localStorage.setItem('locked', JSON.stringify(locked));
+  alert(locked?'Voting is now LOCKED':'Voting is now UNLOCKED');
+  renderCards();
 }
 
 document.addEventListener('keydown',(e)=>{
