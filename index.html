@@ -145,12 +145,6 @@ const females = [
 let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
 let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
-// allow voting again after reset
-if (!localStorage.getItem('allowVoteAgain')) {
-  localStorage.removeItem('voted');
-  localStorage.setItem('allowVoteAgain', 'true');
-}
-
 function renderCards(){
   const voted = localStorage.getItem('voted') === 'true';
   
@@ -186,9 +180,9 @@ function vote(group,i){
   }
   votes[group][i]++;
   localStorage.setItem('votes', JSON.stringify(votes));
-  localStorage.setItem('voted', 'true'); // prevent multiple votes
+  localStorage.setItem('voted', 'true');
   alert('Vote submitted!');
-  renderCards(); // disables buttons, no counts shown
+  renderCards();
 }
 
 function toggleResults(){
@@ -224,11 +218,10 @@ function resetVotes(){
   if(confirm('Reset all votes?')){
     votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes', JSON.stringify(votes));
-    localStorage.removeItem('voted'); // allow voting again
-    localStorage.setItem('allowVoteAgain', 'true');
+    localStorage.removeItem('voted'); // allow everyone to vote again
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
-    alert("Votes reset successfully!");
+    alert("Votes reset successfully! Everyone can vote again.");
     renderCards();
   }
 }
