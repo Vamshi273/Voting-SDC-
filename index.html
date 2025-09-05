@@ -146,19 +146,24 @@ let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.leng
 let locked = JSON.parse(localStorage.getItem('locked')) || false;
 
 function renderCards(){
-  const mrContainer=document.getElementById('mrCards'); mrContainer.innerHTML='';
+  const voted = localStorage.getItem('voted'); // check if user has voted
+  const mrContainer = document.getElementById('mrCards');
+  mrContainer.innerHTML = '';
   males.forEach((c,i)=>{
-    const card=document.createElement('div'); card.className='card';
-    card.innerHTML=`<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
-    <button class="vote-btn" onclick="vote('males',${i})" ${locked?'disabled':''}>Vote</button>`;
+    const card = document.createElement('div'); 
+    card.className = 'card';
+    card.innerHTML = `<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
+      <button class="vote-btn" onclick="vote('males',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
     mrContainer.appendChild(card);
   });
 
-  const mrsContainer=document.getElementById('mrsCards'); mrsContainer.innerHTML='';
+  const mrsContainer = document.getElementById('mrsCards');
+  mrsContainer.innerHTML = '';
   females.forEach((c,i)=>{
-    const card=document.createElement('div'); card.className='card';
-    card.innerHTML=`<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
-    <button class="vote-btn" onclick="vote('females',${i})" ${locked?'disabled':''}>Vote</button>`;
+    const card = document.createElement('div'); 
+    card.className = 'card';
+    card.innerHTML = `<img src="${c.img}" alt="${c.name}"><h3>${c.name}</h3>
+      <button class="vote-btn" onclick="vote('females',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
     mrsContainer.appendChild(card);
   });
 }
@@ -208,7 +213,9 @@ function resetVotes(){
   if(confirm('Reset all votes?')){
     votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
     localStorage.setItem('votes', JSON.stringify(votes));
-    localStorage.removeItem('voted'); // allow voting again
+
+    // Clear voted flag to allow voting again
+    localStorage.removeItem('voted');
 
     locked = false;
     localStorage.setItem('locked', JSON.stringify(locked));
