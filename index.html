@@ -123,6 +123,7 @@ h2 {
     <h2>Voting Results</h2>
     <ul id="resultsList"></ul>
     <button onclick="resetVotes()">Reset Votes</button>
+    <button onclick="forceResetVotes()">Force Reset Votes</button>
   </div>
 </div>
 
@@ -224,6 +225,20 @@ function resetVotes(){
     alert("Votes reset successfully! Everyone can vote again.");
     renderCards();
   }
+}
+
+// Force reset for mobile issues
+function forceResetVotes(){
+  const pass = prompt("Enter admin password to force reset:");
+  if(pass !== adminPassword){
+    alert("Wrong password!");
+    return;
+  }
+  localStorage.clear(); // clear everything
+  votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
+  locked = false;
+  alert("Force reset complete! Everyone can vote again.");
+  renderCards();
 }
 
 function toggleLock(){
