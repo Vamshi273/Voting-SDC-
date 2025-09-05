@@ -126,14 +126,11 @@ h2 {
   </div>
 </div>
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  // Import Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyASRaI1yNulEOcUlhtiA2S1Phf4P8TfYMk",
     authDomain: "voting-sdc.firebaseapp.com",
@@ -145,130 +142,120 @@ h2 {
     measurementId: "G-GZYTTT6QHJ"
   };
 
-  // Initialize Firebase
+  // Init Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-<script>
-const adminPassword = "saptarang123";
+  const db = getDatabase(app);
 
-const males = [
-  {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
-  {name:"Chiranjeevi", img:"517EDEYjsHL.jpg"},
-  {name:"Appu ", img:"4b66c7797edf566ce33faf716aff65f6.jpg"},
-  {name:"Ramcharan", img:"MV5BZWY1NTQyMWItMWU2OS00NWMwLWFlN2MtMDZlYzEwZmU3MTYzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"}
-];
-const females = [
-  {name:"Samantha", img:"samantha-ruth-prabhu-stills-photos-pictures-2008.jpg"},
-  {name:"Sai Pallavi", img:"HD-wallpaper-sai-pallavi-fidaa-love-story-naga-chaitanya-sai-pallavi-shekhar-kammula-tollywood.jpg"},
-  {name:"Sreelela", img:"Sreeleela-m-1.jpg"},
-  {name:"Kajal", img:"a4c87cf5b9871dd67ebc6df0627d000a.jpg"}
-];
+  const adminPassword = "saptarang123";
 
-let votes = JSON.parse(localStorage.getItem('votes')) || {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
-let locked = JSON.parse(localStorage.getItem('locked')) || false;
+  const males = [
+    {name:"Prabhas", img:"prabhas_latest_photos_2807170354_03.jpg"},
+    {name:"Chiranjeevi", img:"517EDEYjsHL.jpg"},
+    {name:"Appu", img:"4b66c7797edf566ce33faf716aff65f6.jpg"},
+    {name:"Ramcharan", img:"MV5BZWY1NTQyMWItMWU2OS00NWMwLWFlN2MtMDZlYzEwZmU3MTYzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"}
+  ];
+  const females = [
+    {name:"Samantha", img:"samantha-ruth-prabhu-stills-photos-pictures-2008.jpg"},
+    {name:"Sai Pallavi", img:"HD-wallpaper-sai-pallavi-fidaa-love-story-naga-chaitanya-sai-pallavi-shekhar-kammula-tollywood.jpg"},
+    {name:"Sreelela", img:"Sreeleela-m-1.jpg"},
+    {name:"Kajal", img:"a4c87cf5b9871dd67ebc6df0627d000a.jpg"}
+  ];
 
-function renderCards(){
-  const voted = localStorage.getItem('voted') === 'true';
-  
-  const mrContainer = document.getElementById('mrCards');
-  mrContainer.innerHTML = '';
-  males.forEach((c,i)=>{
-    const card = document.createElement('div'); 
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${c.img}" alt="${c.name}">
-      <h3>${c.name}</h3>
-      <button class="vote-btn" onclick="vote('males',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
-    mrContainer.appendChild(card);
-  });
+  let locked = false;
 
-  const mrsContainer = document.getElementById('mrsCards');
-  mrsContainer.innerHTML = '';
-  females.forEach((c,i)=>{
-    const card = document.createElement('div'); 
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${c.img}" alt="${c.name}">
-      <h3>${c.name}</h3>
-      <button class="vote-btn" onclick="vote('females',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
-    mrsContainer.appendChild(card);
-  });
-}
+  function renderCards(){
+    const voted = localStorage.getItem('voted') === 'true';
 
-function vote(group,i){
-  if(localStorage.getItem('voted')) {
-    alert('You have already voted!');
-    return;
-  }
-  votes[group][i]++;
-  localStorage.setItem('votes', JSON.stringify(votes));
-  localStorage.setItem('voted', 'true');
-  alert('Vote submitted!');
-  renderCards();
-}
+    const mrContainer = document.getElementById('mrCards');
+    mrContainer.innerHTML = '';
+    males.forEach((c,i)=>{
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${c.img}" alt="${c.name}">
+        <h3>${c.name}</h3>
+        <button class="vote-btn" onclick="vote('males',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
+      mrContainer.appendChild(card);
+    });
 
-function toggleResults(){
-  const pass = prompt("Enter admin password to view results:");
-  if(pass !== adminPassword){
-    alert("Wrong password!");
-    return;
+    const mrsContainer = document.getElementById('mrsCards');
+    mrsContainer.innerHTML = '';
+    females.forEach((c,i)=>{
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${c.img}" alt="${c.name}">
+        <h3>${c.name}</h3>
+        <button class="vote-btn" onclick="vote('females',${i})" ${locked || voted ? 'disabled' : ''}>Vote</button>`;
+      mrsContainer.appendChild(card);
+    });
   }
 
-  const modal=document.getElementById('resultsModal'); 
-  const list=document.getElementById('resultsList');
-  list.innerHTML='';
-  males.forEach((v,i)=>{
-    const li=document.createElement('li'); 
-    li.textContent=`${males[i].name} (Mr.): ${votes.males[i]} votes`; 
-    list.appendChild(li);
-  });
-  females.forEach((v,i)=>{
-    const li=document.createElement('li'); 
-    li.textContent=`${females[i].name} (Mrs.): ${votes.females[i]} votes`; 
-    list.appendChild(li);
-  });
-  modal.style.display='block';
-}
-
-function resetVotes(){
-  const pass = prompt("Enter admin password to reset votes:");
-  if(pass !== adminPassword){
-    alert("Wrong password!");
-    return;
-  }
-
-  if(confirm('Reset all votes?')){
-    votes = {males:Array(males.length).fill(0), females:Array(females.length).fill(0)};
-    localStorage.setItem('votes', JSON.stringify(votes));
-    localStorage.removeItem('voted'); // allow everyone to vote again
-    locked = false;
-    localStorage.setItem('locked', JSON.stringify(locked));
-    alert("Votes reset successfully! Everyone can vote again.");
+  // Save vote to Firebase
+  window.vote = async function(group,i){
+    if(localStorage.getItem('voted')){
+      alert("You already voted!");
+      return;
+    }
+    const voteRef = ref(db, `votes/${group}/${i}`);
+    const snapshot = await get(voteRef);
+    let current = snapshot.exists() ? snapshot.val() : 0;
+    await set(voteRef, current + 1);
+    localStorage.setItem('voted', 'true');
+    alert("Vote submitted!");
     renderCards();
   }
-}
 
-function toggleLock(){
-  const pass = prompt("Enter admin password to lock/unlock voting:");
-  if(pass !== adminPassword){
-    alert("Wrong password!");
-    return;
+  // Show results (admin only)
+  window.toggleResults = async function(){
+    const pass = prompt("Enter admin password to view results:");
+    if(pass !== adminPassword){
+      alert("Wrong password!");
+      return;
+    }
+    const modal = document.getElementById('resultsModal');
+    const list = document.getElementById('resultsList');
+    list.innerHTML = '';
+
+    const malesSnap = await get(ref(db,"votes/males"));
+    males.forEach((c,i)=>{
+      const li = document.createElement("li");
+      li.textContent = `${c.name} (Mr.): ${(malesSnap.exists() && malesSnap.val()[i]) || 0} votes`;
+      list.appendChild(li);
+    });
+
+    const femalesSnap = await get(ref(db,"votes/females"));
+    females.forEach((c,i)=>{
+      const li = document.createElement("li");
+      li.textContent = `${c.name} (Mrs.): ${(femalesSnap.exists() && femalesSnap.val()[i]) || 0} votes`;
+      list.appendChild(li);
+    });
+
+    modal.style.display = "block";
   }
 
-  locked = !locked;
-  localStorage.setItem('locked', JSON.stringify(locked));
-  alert(locked ? "Voting is now LOCKED" : "Voting is now UNLOCKED");
+  // Reset votes (admin only)
+  window.resetVotes = async function(){
+    const pass = prompt("Enter admin password to reset votes:");
+    if(pass !== adminPassword){
+      alert("Wrong password!");
+      return;
+    }
+    if(confirm("Reset all votes?")){
+      await set(ref(db,"votes"), {males:Array(males.length).fill(0), females:Array(females.length).fill(0)});
+      localStorage.removeItem('voted');
+      locked = false;
+      alert("Votes reset successfully!");
+      renderCards();
+    }
+  }
+
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='R'||e.key==='r') toggleResults();
+    if(e.ctrlKey && e.altKey && e.key==='r') resetVotes();
+  });
+
   renderCards();
-}
-
-document.addEventListener('keydown',(e)=>{
-  if(e.key==='R'||e.key==='r') toggleResults();
-  if(e.ctrlKey && e.altKey && e.key==='r') resetVotes();
-  if(e.key==='L'||e.key==='l') toggleLock();
-});
-
-renderCards();
 </script>
 </body>
 </html>
